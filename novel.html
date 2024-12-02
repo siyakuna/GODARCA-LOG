@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>流刑家班</title>
+  <style>
+    :root{
+        --goda-red: #F20658
+    }
+    @font-face { 
+    font-family: "Futura"; 
+  
+    /* フォントが置かれているパスを書く */ 
+    src: url("OPTIFuturaDemiBold.otf") format("truetype") 
+}
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background-color: #000000;
+      font-family: 'Futura','Georgia', serif;
+      user-select: none
+    }
+
+    #number{
+        bottom: -25%;
+    right: 0;
+    position: absolute;
+    font-size: 15px;
+    opacity: 0.3;
+    }
+
+    #textblock{
+    
+    position: absolute;
+    bottom: 10%;
+    width: 80%;
+    height: 200px;
+    left: 10%;
+    z-index: 1;
+    animation: chat-in 0.3s;
+    }
+    @keyframes chat-in {
+      0%{
+        transform: translateY(400px);
+      }
+      100%{
+        transform: translateY(0px);
+      }
+    }
+    #character-name{
+    font-weight: bold;
+    font-size: 30px;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    overflow: hidden;
+    border: var(--goda-red) 2px solid;
+    border-bottom: 0;
+    display: inline-flex;
+    }
+    #text-window {
+      background: rgba(0, 0, 0, 0.7);
+      border: var(--goda-red) 2px solid;
+      border-bottom: 0;
+      padding: 20px;
+      color: white;
+      font-size: 1.2em;
+      line-height: 1.5em;
+      cursor: pointer;
+      height: 170px;
+      overflow: hidden;
+    }
+
+    #tab-text {
+    font-weight: bold;
+    margin-bottom: 10px;
+    background: rgba(0, 0, 0, 0.352);
+    color: var(--goda-red);
+    border: var(--goda-red) 2px solid;
+    border-left: 0;
+    position: absolute;
+    top: 15%;
+    font-size: 40px;
+    padding-left: 150px;
+    }
+    #menu-area{
+    text-align: center;
+    position: absolute;   
+    top: 4%;
+    right: 0;
+    height: 50px;
+    width: 60px;
+    padding-right: 90px;
+    border: var(--goda-red) 2px solid;
+    border-right: 0;
+    z-index: 3;
+    }
+    #menu-button{
+    z-index: 2;
+    position: absolute;
+    height: 50px;
+    width: 100%;
+    color: var(--goda-red);
+    font-size: 40px;
+    background: #000000ad;
+    transition: all 1s;
+    }
+    #menu-area:hover  #menu-list {
+    height: auto;
+    background: #000000ad;
+}
+    #menu-list{
+    z-index: 1;
+    position: absolute;
+    padding: 0;
+    width: 100%;
+    height: 0px;
+    background: #000000ad;
+    top: 104%;
+    right: 0;
+    transition: all 0.4s;
+    border-right: 0;
+    }
+    #menu-area:hover #menu-button{
+        background: #000000;
+    }
+    .menu-list-button{
+        width: 100%;
+        height: 30px;
+        opacity: 0;
+        display: block;
+        pointer-events: none;
+        color: #ffffff;
+        border-bottom: var(--goda-red) solid 0.4px ;
+        text-align: center;
+        font-size: 25px;
+        transition: all 0.2s;
+    }
+    .menu-list-button:hover{
+        background-color: #ffffff47;
+    }
+   input[type="checkbox"]:checked + .menu-list-button{
+    color: var(--goda-red);
+    }
+    #menu-area:hover #menu-list .menu-list-button{
+        opacity: 1;
+        pointer-events: all;
+        animation: butn-in 0.2s;
+    }
+    @keyframes butn-in {
+        0%{
+            transform: translateY(-10px);
+        }
+        100%{
+            transform: translateY(0px);
+        }
+    }
+    #dice-area{
+    text-align: center;
+    position: absolute;
+    top: 40%;
+    border-right: var(--goda-red) 2px solid;
+    border-left: var(--goda-red) 2px solid;
+    color: var(--goda-red);
+    right: 0;
+    left: 0;
+    margin: 0 5%;
+    background: #00000030;
+    animation: dicein 0.3s ;
+    z-index: 1;
+    }
+    @keyframes dicein {
+        0%,30%{
+            opacity: 0;
+            margin: 0 50%;
+        }
+        100%{
+            margin: 0 5%;
+        }
+    }
+    @keyframes critical-p {
+      0%{
+        background-position-y: 0%;
+      }
+      100%{
+        background-position-y: 33px;
+      }
+    }
+    #dice-msg{
+      display: flex;
+      justify-content: center;
+    }
+    #character-image {
+      position: absolute;
+      bottom: 10%;
+      right: 5%;
+      height: 60%;
+      max-width: 300px;
+      object-fit: contain;
+      z-index: 0;
+    }
+
+    #scene-range {
+    bottom: -31%;
+    position: absolute;
+    appearance: none;
+    width: 99.8%;
+    left: -2px;
+    border: none;
+    border-radius: 0px;
+    background: linear-gradient(90deg, transparent 100%, transparent 100%);
+    writing-mode: horizontal-tb;
+    direction: unset;
+    cursor: pointer;
+    height: 15px;
+    --thumb-width: 10px;
+    --thumb-height: 15px;
+    --thumb-border: none;
+    --thumb-border-radius: 0px;
+    border: var(--goda-red) solid 1px;
+    &::-webkit-slider-runnable-track {
+    background-blend-mode: color-dodge, lighten;
+  }
+    &::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 1%;
+  height: 17px;
+  border: var(--goda-red) solid 1px;
+  box-shadow: none;
+}}
+ canvas{
+  position: absolute;
+  z-index: -1;
+  display: none !important;
+ }
+ #log-window{
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  z-index: 2;
+  background-color:#000000;
+  display: none;
+  overflow: scroll;
+ }
+  </style>
+</head>
+<body>
+  <div id="log-window"></div>
+  <div id="tab-text"></div>
+  <div id="menu-area">
+    <div id="menu-button">MENU</div>
+    <div id="menu-list">
+        <input type="button" style="display: none;" id="home" value="Home" onclick="console.log('ホーム戻る！')">
+        <label for="home" class="menu-list-button">Home</label>
+        <input type="checkbox" style="display: none;" id="auto" value="Auto">
+        <label for="auto" class="menu-list-button">Auto</label>
+        <input type="checkbox" style="display: none;" id="skip" value="Skip">
+        <label for="skip" class="menu-list-button">Skip</label>
+        <input type="checkbox" style="display: none;" id="log" value="Log">
+        <label for="log" class="menu-list-button">Log</label>
+    </div>
+  </div>
+  <div id="dice-area">ダイス</div>
+  <div id="textblock">
+    <div id="character-name">？？？</div>
+  <div id="text-window">
+    <div id="text">██</div>
+    <div id="number">1</div>
+    <input type="range" id="scene-range" min="0" value="0" step="1">
+  </div>
+  </div>
+  
+
+  <img id="character-image" src="" alt="キャラクター立ち絵">
+
+  <script>
+    let currentScene = 0;
+    let scenario = [];
+    let isDisplayingText = false;
+    let textInterval; // テキスト表示のためのインターバルID
+    let textIndex = 0; // 現在のテキストインデックス
+    let url = new URL(window.location.href);
+    let params = url.searchParams;// URLSearchParamsオブジェクトを取得
+    let diceText = ""
+    let skipTime = 1
+
+    //デザイン
+const inputRange = document.getElementById("scene-range");
+const activeColor = "var(--goda-red)";
+const inactiveColor = "transparent";
+
+
+function rangeColer(){
+    const ratio = (inputRange.value - inputRange.min) / (inputRange.max - inputRange.min) * 99.2;
+  inputRange.style.background = `linear-gradient(90deg, ${activeColor} ${ratio}%, ${inactiveColor} ${ratio}%)`;
+}
+
+//戦闘キャラ駒
+//キャラクター一覧
+let character = {
+  Antares:{name:"アンタレス",x:1,y:1,z:0,zr:30,hp:10,mp:10,down:false,buff:{},img:"images/antaresu.png"},
+   
+}
+
+    // シーン更新関数
+    function updateScene() {
+      if(!scenario[currentScene]){
+        startTextDisplay("これはエラーメッセージだよ。シーン入力間違えたのかな？")
+        currentScene = -1
+      }
+      const scene = scenario[currentScene];
+      console.log(scene)
+      //駒移動がある場合
+      for(var key of Object.keys(character)){
+        if(!scene.character)continue
+        for(var SenKey of Object.keys(scene.character)){
+        if(key===SenKey){
+          const saveObj = character[key].obj
+          character[key] = scene.character[SenKey]
+          character[key].obj = saveObj
+        }
+      } 
+      }
+
+      if(scene.type==="message"){
+        document.getElementById('textblock').style.display="block"
+            console.log("テキスト")
+            document.getElementById('dice-area').style.display = "none"
+            document.getElementById('character-name').textContent = scene.name;
+            document.getElementById('tab-text').textContent = scene.tab.replace("[","").replace("]","")
+            startTextDisplay(scene.text);
+      let img = scene.img
+      const characterImage = document.getElementById('character-image');
+      if (img) {
+        characterImage.src = img;
+        characterImage.style.display = 'block';
+      } else {
+        characterImage.style.display = 'none';
+      }
+
+      }
+      if(scene.type==="dice"){
+        let img = scene.img||""
+            if(scenario[currentScene+1]&&scenario[currentScene+1].type==="dice"){
+                console.log("次もダイス")
+                let diceColer="style='color: #ffffff;'"
+                if(scene.text.endsWith("成功")) diceColer="style='color: #36c7ff;'"
+                if(scene.text.endsWith("スペシャル")) diceColer="style='color: #6afff6;''"
+                if(scene.text.endsWith("失敗")) diceColer="style='color: var(--goda-red);'"
+                if(scene.text.endsWith("決定的成功/スペシャル")) diceColer="style='background: linear-gradient(180deg, #ff00c0 10%, #7b91ff 50%, #00ffb0 90%, #ff00c0 100%);-webkit-background-clip: text;-webkit-text-fill-color: transparent;animation: critical-p 1s;animation-iteration-count: infinite;'"
+                if(scene.text.endsWith("致命的失敗")) diceColer="style='color: #a70000;'"
+                diceText = diceText + `<p id="dice-msg"${diceColer}><img src="${img}" width="35px" height="35px"> ${scene.tab}  ${scene.name}  :  ${scene.text}  <p>`;
+                currentScene++
+                updateScene()
+            }else{
+                let diceColer="style='color: #ffffff;'"
+                if(scene.text.endsWith("成功")) diceColer="style='color: #36c7ff;'"
+                if(scene.text.endsWith("スペシャル")) diceColer="style='color: #6afff6;''"
+                if(scene.text.endsWith("失敗")) diceColer="style='color: var(--goda-red);'"
+                if(scene.text.endsWith("決定的成功/スペシャル")) diceColer="style='background: linear-gradient(180deg, #ff00c0 10%, #7b91ff 50%, #00ffb0 90%, #ff00c0 100%);-webkit-background-clip: text;-webkit-text-fill-color: transparent;animation: critical-p 1s;animation-iteration-count: infinite;'"
+                if(scene.text.endsWith("致命的失敗")) diceColer="style='color: #a70000;'"
+                diceText = diceText + `<p id="dice-msg"${diceColer}><img src="${img}" width="35px" height="35px"> ${scene.tab}  ${scene.name}  :  ${scene.text}  <p>`;
+                document.getElementById('dice-area').innerHTML = diceText;
+                document.getElementById('dice-area').style.display = "block"
+                diceText = ""
+                if(document.getElementById("auto").checked||document.getElementById("skip").checked){
+            setTimeout(function() {
+            nextScene()
+            }, 2000*skipTime);
+        }
+            }
+      }
+      if(scene.type==="system"){
+            console.log("システム:"+scene.text)
+            let stChange = scene.text.split('→')
+            stChange = [Number(stChange[0].split(':')[1].trim()),Number(stChange[1].trim())]
+            console.log(stChange[1]-stChange[0])
+            let systemColor = "style='color: var(--goda-red);'"
+            if(stChange[1]-stChange[0] > 0){
+                systemColor = "style='color: #00d798;'"
+            }
+            document.getElementById('dice-area').innerHTML = `<p ${systemColor}><ruby>${scene.text}<rt style="    color: var(--goda-red);
+    font-size: 18px;
+    text-align: center;">${scene.tab.replace("[","").replace("]","")}</rt></ruby></p>`;
+            document.getElementById('dice-area').style.display = "block"
+            if(document.getElementById("auto").checked||document.getElementById("skip").checked){
+            setTimeout(function() {
+            nextScene()
+            }, 1000*skipTime);
+        }
+      }
+      document.getElementById('scene-range').value = currentScene;
+      rangeColer()
+    }
+
+    // テキスト表示を開始する関数
+    function startTextDisplay(text) {
+        var intervalTime = 50;
+      clearInterval(textInterval); // インターバルをクリアして再初期化
+      document.getElementById('text').textContent = ''; // テキストをクリア
+      document.getElementById('number').textContent = currentScene
+      textIndex = 0;
+      isDisplayingText = true;
+      textInterval = setInterval(() => displayNextCharacter(text), intervalTime*skipTime);
+    }
+
+    // 次の文字を表示する関数
+    function displayNextCharacter(text) {
+      const textElement = document.getElementById('text');
+      if (textIndex < text.length) {
+        textElement.textContent += text[textIndex++];
+      } else {
+        clearInterval(textInterval); // 完全に表示し終わったらインターバルを停止
+        isDisplayingText = false;
+        if(document.getElementById("auto").checked||document.getElementById("skip").checked){
+            setTimeout(function() {
+            nextScene()
+            }, 1000*skipTime);
+        }
+      }
+    }
+    //オートボタンを押したときテキストが全てでていたら次に進む
+    document.getElementById('auto').addEventListener("change",function(){
+        if(document.getElementById("auto").checked){
+            document.getElementById("skip").checked = false
+            skipTime = 1;
+           if(!isDisplayingText) nextScene()
+        }
+    });
+    document.getElementById('skip').addEventListener("change",function(){
+        if(document.getElementById("skip").checked){
+            skipTime = 0.1;
+            document.getElementById("auto").checked = false
+            if(!isDisplayingText) nextScene();
+        }else{
+            skipTime = 1;
+        }
+    });
+    let logDisp = false
+    document.getElementById('log').addEventListener("change",function(){
+      if(document.getElementById("log").checked){
+        logDisp = true
+        document.getElementById('log-window').innerHTML=""
+        for(var i = 0;i<=currentScene;i++){
+          document.getElementById('log-window').style.display = "block"
+        let textbox_element = document.getElementById('log-window');
+        // 新しいHTML要素を作成
+        let new_element = document.createElement('p');
+        new_element.textContent = `${scenario[i].tab}${scenario[i].name}:${scenario[i].text}`;
+        new_element.style.color = "var(--goda-red)"
+        // 指定した要素の中の末尾に挿入
+        textbox_element.appendChild(new_element); 
+        }
+        let elements = document.getElementById('log-window').getElementsByTagName('p')
+        elements[elements.length-1].scrollIntoView(false)
+        }else{
+          document.getElementById('log-window').style.display = "none"
+          logDisp = false
+        }
+    });
+
+    // テキストをスキップして瞬時に全表示する関数
+    function skipText() {
+      if (isDisplayingText) {
+        clearInterval(textInterval); // インターバルを停止
+        const scene = scenario[currentScene];
+        document.getElementById('text').textContent = scene.text; // 全テキスト表示
+        isDisplayingText = false;
+      } else {
+        nextScene(); // 既に表示済みなら次のシーンへ
+      }
+    }
+
+    // 次のシーンに進む処理
+    function nextScene() {
+      if(logDisp)return
+      if (currentScene < scenario.length - 1) {
+        currentScene++;
+        updateScene();
+      }else{
+        window.location.href = "/index.html";
+      }
+    }
+
+    // シーンを指定番号に変更する処理
+    function changeSceneByRange(value) {
+      currentScene = parseInt(value, 10);
+      updateScene();
+    }
+
+    // イベントリスナーの設定
+    document.getElementById('text-window').addEventListener('click', skipText);
+    document.addEventListener('keydown', (event) => {
+      if (event.key === ' ' || event.key === 'Enter') {
+        skipText();
+      }
+    });
+
+    // スライダーの入力イベント
+    document.getElementById('scene-range').addEventListener('input', (event) => {
+      changeSceneByRange(event.target.value);
+    });
+
+    // シナリオをJSONから読み込む
+    fetch('scenario.json')
+      .then(response => response.json())
+      .then(data => {
+        scenario = data;
+        document.getElementById('scene-range').max = scenario.length - 1;
+        updateScene();
+        // getメソッド
+        if(params.get('scene'))changeSceneByRange(params.get('scene'))
+      })
+      .catch(error => console.error('シナリオの読み込みに失敗しました:', error));
+  </script>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.167.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.167.0/examples/jsm/"
+      }
+    }
+  </script>
+<script type="module" src="main.js"></script>
+</body>
+</html>
